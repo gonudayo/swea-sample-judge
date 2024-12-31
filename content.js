@@ -44,7 +44,7 @@ async function compareOutput() {
     .replace(/<br>/g, "\r\n");
 
   const resultMessage = document.createElement("div");
-  resultMessage.classList.add("result-message");
+  resultMessage.classList.add("result-message", "fade-in");
 
   if (!outputAnswer.endsWith("\r\n")) {
     outputAnswer += "\r\n";
@@ -66,10 +66,10 @@ async function compareOutput() {
   */
 
   if (outputText === outputAnswer) {
-    resultMessage.innerText = "정답입니다.";
+    resultMessage.innerText = "Correct!";
     resultMessage.style.borderColor = "green";
   } else {
-    resultMessage.innerText = "틀렸습니다.";
+    resultMessage.innerText = "Wrong!";
     resultMessage.style.borderColor = "red";
   }
 
@@ -80,6 +80,11 @@ async function compareOutput() {
   }
 
   document.body.appendChild(resultMessage);
+
+  // 10초 후 결과 메시지 제거
+  setTimeout(() => {
+    resultMessage.remove();
+  }, 10000);
 }
 
 // Run 버튼 클릭 시 실행되는 함수
