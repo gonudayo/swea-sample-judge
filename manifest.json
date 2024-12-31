@@ -13,8 +13,5 @@
   ],
   "permissions": [
     "activeTab"
-  ],
-  "host_permissions": [
-    "https://swexpertacademy.com/main/solvingProblem/solvingProblem.do"
   ]
 }
