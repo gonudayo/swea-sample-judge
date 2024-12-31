@@ -1,0 +1,20 @@
+{
+  "name": "SEWA Sample Judge",
+  "description": "Easy to use sample judge for SW Expert Academy",
+  "homepage_url": "https://github.com/gonudayo/swea-sample-judge",
+  "version": "0.1.0",
+  "manifest_version": 3,
+  "content_scripts": [
+    {
+      "matches": ["https://swexpertacademy.com/main/solvingProblem/solvingProblem.do"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ],
+  "permissions": [
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://swexpertacademy.com/main/solvingProblem/solvingProblem.do"
+  ]
+}

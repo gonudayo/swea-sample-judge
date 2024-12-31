@@ -1,0 +1,16 @@
+.insert-sample-button {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  z-index: 1000;
+}
+
+.result-message {
+  position: fixed;
+  bottom: 50px;
+  right: 10px;
+  z-index: 1000;
+  background-color: white;
+  border: 1px solid;
+  padding: 10px;
+}
