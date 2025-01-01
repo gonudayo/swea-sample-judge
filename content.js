@@ -1,18 +1,5 @@
 let outputAnswer = "";
 
-// 입력 파일을 가져와서 textarea에 삽입
-async function fetchAndInsertInput() {
-  const link = document.querySelector(".down_area a[href*='downType=in']");
-  if (link) {
-    const response = await fetch(link.href);
-    const text = await response.text();
-    const textarea = document.querySelector("#scs_input");
-    if (textarea) {
-      textarea.value = text;
-    }
-  }
-}
-
 // 출력 파일을 가져와서 변수에 저장
 async function fetchAndStoreOutput() {
   const link = document.querySelector(".down_area a[href*='downType=out']");
@@ -22,20 +9,13 @@ async function fetchAndStoreOutput() {
   }
 }
 
-// 샘플 삽입 버튼
-function addButton() {
-  const button = document.createElement("button");
-  button.innerText = "Insert Sample";
-  button.classList.add("insert-sample-button");
-  button.addEventListener("click", async () => {
-    await fetchAndInsertInput();
-    await fetchAndStoreOutput();
-  });
-  document.body.appendChild(button);
-}
-
 // 출력 결과를 비교
 async function compareOutput() {
+  // 최초 실행시 출력 파일 저장
+  if (!outputAnswer) {
+    await fetchAndStoreOutput();
+  }
+
   const outputElement = document.querySelector(
     "#scs_output > li:nth-child(2) > span.text"
   );
@@ -50,27 +30,14 @@ async function compareOutput() {
     outputAnswer += "\r\n";
   }
 
-  // 디버깅용 코드
-  /*
-  console.log(typeof outputText);
-  console.log(outputText.length);
-  console.log(outputText);
-  
-  console.log(typeof outputAnswer);
-  console.log(outputAnswer.length);
-  console.log(outputAnswer);
-
-  for (let i = 0; i < outputText.length; i++) {
-    console.log(outputText.charCodeAt(i), outputAnswer.charCodeAt(i));
-  }
-  */
-
   if (outputText === outputAnswer) {
     resultMessage.innerText = "Correct!";
     resultMessage.style.borderColor = "green";
+    resultMessage.style.color = "green";
   } else {
     resultMessage.innerText = "Wrong!";
     resultMessage.style.borderColor = "red";
+    resultMessage.style.color = "red";
   }
 
   // 이전 결과 메시지 제거
@@ -89,18 +56,9 @@ async function compareOutput() {
 
 // Run 버튼 클릭 시 실행되는 함수
 function onRun() {
-  const initialLength = document.querySelectorAll(
-    "#scs_output > li.print_msg"
-  ).length;
-
   const observer = new MutationObserver(() => {
-    const currentLength = document.querySelectorAll(
-      "#scs_output > li.print_msg"
-    ).length;
-    if (currentLength > initialLength) {
-      observer.disconnect();
-      compareOutput();
-    }
+    observer.disconnect();
+    compareOutput();
   });
 
   observer.observe(document.querySelector("#scs_output"), {
@@ -108,8 +66,6 @@ function onRun() {
     subtree: true,
   });
 }
-
-window.addEventListener("load", addButton);
 
 // Run 버튼에 onRun 함수 연결
 const runButton = document.querySelector(
