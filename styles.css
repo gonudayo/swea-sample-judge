@@ -1,7 +1,7 @@
 .result-message {
   position: fixed;
   font-weight: bold;
-  font-size: 30px;
+  font-size: 27px;
   bottom: 50px;
   right: 10px;
   z-index: 1000;
