@@ -1,4 +1,4 @@
-let outputSample = ""; // 샘플 출력 결과
+let sampleOutput = ""; // 샘플 아웃풋
 let removeSpacesBeforeLineBreaks = true; // 개행 앞 공백 제거 옵션
 let insertNewlineAtEnd = true; // 개행 추가 옵션
 
@@ -13,12 +13,12 @@ async function fetchSettings() {
   });
 }
 
-// 출력 파일을 가져와서 변수에 저장
+// 샘플 아웃풋 저장
 async function fetchAndStoreOutput() {
   const link = document.querySelector(".down_area a[href*='downType=out']");
   if (link) {
     const response = await fetch(link.href);
-    outputSample = await response.text();
+    sampleOutput = await response.text();
   }
 }
 
@@ -26,59 +26,59 @@ async function fetchAndStoreOutput() {
 async function compareOutput() {
   await fetchSettings(); // 설정 동기화
 
-  // 최초 실행시 출력 파일 저장
-  if (!outputSample) {
+  // 최초 실행시 샘플 아웃풋 저장
+  if (!sampleOutput) {
     await fetchAndStoreOutput();
   }
 
+  // 유저 아웃풋 가져오기
   const outputElement = document.querySelector(
     "#scs_output > li:nth-child(2) > span.text"
   );
 
-  const outputText = outputElement.innerHTML
+  // 유저 아웃풋 형식을 샘플과 동일하게 변환
+  let userOutput = outputElement.innerHTML
     .replace(/&nbsp;/g, " ")
-    .replace(/<br>/g, "\r\n");
+    .replace(/<br>/g, "\n");
 
-  const resultMessage = document.createElement("div");
-  resultMessage.classList.add("result-message", "fade-in");
-
-  // 샘플에 개행 앞에 공백이 있는 경우 제거
+  // 샘플, 유저 아웃풋 개행 앞에 공백이 있는 경우 제거
   if (removeSpacesBeforeLineBreaks) {
-    outputSample = outputSample.replace(/ \r\n/g, "\r\n");
+    sampleOutput = sampleOutput.replace(/\s+\n/g, "\n");
+    userOutput = userOutput.replace(/\s+\n/g, "\n");
   } else {
     await fetchAndStoreOutput();
   }
 
-  // 샘플의 끝이 개행이 아닌 경우 추가
-  if (insertNewlineAtEnd && !outputSample.endsWith("\r\n")) {
-    outputSample += "\r\n";
-  } else if (!insertNewlineAtEnd) {
-    outputSample = outputSample.trimEnd();
-  }
+  // 샘플, 유저 아웃풋 마지막 불필요한 공백과 개행을 모두 제거
+  sampleOutput = sampleOutput.replace(/[\s\r\n]+$/, "");
+  userOutput = userOutput.replace(/[\s\r\n]+$/, "");
 
   // 디버깅용 코드
-  /*
   console.log(removeSpacesBeforeLineBreaks);
   console.log(insertNewlineAtEnd);
 
-  console.log(outputText.length);
-  console.log(outputText);
+  console.log(userOutput.length);
+  console.log(userOutput);
 
-  console.log(outputSample.length);
-  console.log(outputSample);
+  console.log(sampleOutput.length);
+  console.log(sampleOutput);
 
-  // const maxLength = Math.max(outputText.length, outputSample.length);
-  // for (let i = 0; i < maxLength; i++) {
-  //   const outputChar = outputText[i] || " ";
-  //   const sampleChar = outputSample[i] || " ";
-  //   console.log(
-  //     outputChar + ": " + (outputText.charCodeAt(i) || " "),
-  //     sampleChar + ": " + (outputSample.charCodeAt(i) || " ")
-  //   );
-  // }
-  */
+  const maxLength = Math.max(userOutput.length, sampleOutput.length);
+  for (let i = 0; i < maxLength; i++) {
+    const outputChar = userOutput[i] || " ";
+    const sampleChar = sampleOutput[i] || " ";
+    console.log(
+      "My = " + outputChar + ": " + (userOutput.charCodeAt(i) || " "),
+      "Sample = " + sampleChar + ": " + (sampleOutput.charCodeAt(i) || " ")
+    );
+  }
+  // 디버깅용 코드 끝
 
-  if (outputText === outputSample) {
+  // 결과 메시지 생성
+  const resultMessage = document.createElement("div");
+  resultMessage.classList.add("result-message", "fade-in");
+
+  if (userOutput === sampleOutput) {
     resultMessage.innerText = "Correct!";
     resultMessage.style.borderColor = "green";
     resultMessage.style.color = "green";
