@@ -4,20 +4,14 @@
   "homepage_url": "https://github.com/gonudayo/swea-sample-judge",
   "version": "0.1.2",
   "manifest_version": 3,
-  "background": {
-    "service_worker": "background.js"
-  },
   "content_scripts": [
     {
-      "matches": ["https://swexpertacademy.com/main/solvingProblem/solvingProblem.do"],
+      "matches": [
+        "https://swexpertacademy.com/main/solvingProblem/solvingProblem.do"
+      ],
       "js": ["content.js"],
       "css": ["styles.css"]
     }
   ],
-  "action": {
-    "default_popup": "popup/popup.html"
-  },
-  "permissions": [
-    "activeTab"
-  ]
+  "permissions": ["activeTab"]
 }

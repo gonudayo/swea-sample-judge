@@ -1,17 +1,4 @@
 let sampleOutput = ""; // 샘플 아웃풋
-let removeSpacesBeforeLineBreaks = true; // 개행 앞 공백 제거 옵션
-let insertNewlineAtEnd = true; // 개행 추가 옵션
-
-// background.js에서 설정 가져오기
-async function fetchSettings() {
-  return new Promise((resolve) => {
-    chrome.runtime.sendMessage({ action: "getSettings" }, (response) => {
-      removeSpacesBeforeLineBreaks = response.removeSpacesBeforeLineBreaks;
-      insertNewlineAtEnd = response.insertNewlineAtEnd;
-      resolve();
-    });
-  });
-}
 
 // 샘플 아웃풋 저장
 async function fetchAndStoreOutput() {
@@ -24,8 +11,6 @@ async function fetchAndStoreOutput() {
 
 // 출력 결과를 비교
 async function compareOutput() {
-  await fetchSettings(); // 설정 동기화
-
   // 최초 실행시 샘플 아웃풋 저장
   if (!sampleOutput) {
     await fetchAndStoreOutput();
@@ -42,36 +27,29 @@ async function compareOutput() {
     .replace(/<br>/g, "\n");
 
   // 샘플, 유저 아웃풋 개행 앞에 공백이 있는 경우 제거
-  if (removeSpacesBeforeLineBreaks) {
-    sampleOutput = sampleOutput.replace(/\s+\n/g, "\n");
-    userOutput = userOutput.replace(/\s+\n/g, "\n");
-  } else {
-    await fetchAndStoreOutput();
-  }
+  sampleOutput = sampleOutput.replace(/\s+\n/g, "\n");
+  userOutput = userOutput.replace(/\s+\n/g, "\n");
 
-  // 샘플, 유저 아웃풋 마지막 불필요한 공백과 개행을 모두 제거
+  // 샘플, 유저 아웃풋 끝에 위치한 공백과 개행을 모두 제거
   sampleOutput = sampleOutput.replace(/[\s\r\n]+$/, "");
   userOutput = userOutput.replace(/[\s\r\n]+$/, "");
 
   // 디버깅용 코드
-  console.log(removeSpacesBeforeLineBreaks);
-  console.log(insertNewlineAtEnd);
-
+  /*
   console.log(userOutput.length);
   console.log(userOutput);
-
   console.log(sampleOutput.length);
   console.log(sampleOutput);
-
   const maxLength = Math.max(userOutput.length, sampleOutput.length);
   for (let i = 0; i < maxLength; i++) {
     const outputChar = userOutput[i] || " ";
     const sampleChar = sampleOutput[i] || " ";
     console.log(
-      "My = " + outputChar + ": " + (userOutput.charCodeAt(i) || " "),
+      "User = " + outputChar + ": " + (userOutput.charCodeAt(i) || " "),
       "Sample = " + sampleChar + ": " + (sampleOutput.charCodeAt(i) || " ")
     );
   }
+  */
   // 디버깅용 코드 끝
 
   // 결과 메시지 생성
