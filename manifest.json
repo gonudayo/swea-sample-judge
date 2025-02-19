@@ -2,7 +2,7 @@
   "name": "SWEA Sample Judge",
   "description": "Easy to use sample judge for SW Expert Academy",
   "homepage_url": "https://github.com/gonudayo/swea-sample-judge",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "permissions": ["downloads"],
   "background": {
     "service_worker": "background.js"
