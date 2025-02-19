@@ -1,5 +1,38 @@
 let sampleOutput = ""; // 샘플 아웃풋
 
+// 샘플 저장
+async function fetchAndStoreSample() {
+  const input = document.querySelector(".down_area a[href*='downType=in']");
+  const output = document.querySelector(".down_area a[href*='downType=out']");
+  if (input) {
+    chrome.runtime.sendMessage({
+      action: "downloadFile",
+      filename: "input.txt",
+      fileUrl: input.href,
+    });
+  }
+  if (output) {
+    chrome.runtime.sendMessage({
+      action: "downloadFile",
+      filename: "output.txt",
+      fileUrl: output.href,
+    });
+  }
+}
+
+// 샘플 다운로드 버튼
+function addButton() {
+  const button = document.createElement("button");
+  button.innerText = "Download Sample";
+  button.classList.add("download-sample-button");
+  button.addEventListener("click", async () => {
+    await fetchAndStoreSample();
+  });
+  document.body.appendChild(button);
+}
+
+window.addEventListener("load", addButton);
+
 // 샘플 아웃풋 저장
 async function fetchAndStoreOutput() {
   const link = document.querySelector(".down_area a[href*='downType=out']");
